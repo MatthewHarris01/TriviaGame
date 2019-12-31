@@ -1,0 +1,10 @@
+/* This is the Style Sheet for Trivia Game project */
+
+body { 
+  background-color:black;
+  background-image: url('../images/main-bg.jpg');
+  font-family:Verdana, Geneva, Tahoma, sans-serif;
+  color:black;
+  font-size:14pt;
+  
+}
