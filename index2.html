@@ -6,7 +6,7 @@
     <meta author="Matthew S Harris">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
-    <title>Space Exploration Trivia Game</title>
+    <title>Question presentation</title>
 
     <!-- linke to styles-->
     <link rel="stylesheet" type="text/css" href="assets/css/style.css" <link rel="stylesheet" type="text/css"
@@ -21,7 +21,13 @@
     <!-- Favicon link -->
     <link rel="icon" href="MHfavicon.ico" type="image/ico">
   </head>
+<style>
 
+p.Answer:hover { 
+  background-color:azure;
+  text-shadow:2px 2px blue;
+}
+</style>
 <body>
 
 <div class="main-container" style="border:3px solid yellow;width:80%;margin-left:auto;margin-right:auto;background-image: url('assets/images/inner-bg.jpg');color:white">
@@ -34,9 +40,14 @@
 
 
 <div class=container id="game-container" style="width:60%;border:2px solid blue;height:400px;margin-left:auto;margin-right:auto;background-image: url('assets/images/play-bg.jpg');text-align:center;">  
-  <p style="color:yellow;text-align:center">Time remaining: <span id="counter" style="color:red;">30</span>.</p>
+  <p style="color:yellow;text-align:center">Time remaining to answer: <span id="counter" style="color:red;">30</span>.</p>
 
-  <button id="startgame" style="text-align:center;margin-left:auto;margin-right:auto;background-color: pink;">Start Game</button>
+  <p id="Question" class="Question" style="color:azure;font-weight:bold;">What was John Glenn’s major accomplishment in the space program?</p>
+
+  <p id="Answer0" class="Answer" style="color:azure;font-weight:bold;width:65%;margin-left:auto;margin-right:auto;">First American to orbit the earth</p>
+
+
+  <!-- <button id="startgame" style="text-align:center;margin-left:auto;margin-right:auto;background-color: pink;">Start Game</button> -->
 
 </div>  <!--end of inner-container div-->
 
