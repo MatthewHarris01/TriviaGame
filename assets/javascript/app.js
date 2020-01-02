@@ -23,7 +23,7 @@ function Question(id, q, correctAnswer, otherAnswers, hasImage, imageURL, info) 
   this.id = id;
   this.q = q;
   this.correctAnswer = correctAnswer;
-  this.otherAnswers = otherAnswers;
+  this.Answers = otherAnswers;
   this.hasImage = hasImage;
   this.imageURL = imageURL;
   this.xtraInfo = info;
@@ -41,30 +41,45 @@ function build_qList() {
   var Q1 = new Question(1,
     "What year was NASA founded?",
     "1958", 
-    ["1950", "1960","1966"], 
+    ["1958","1950", "1960","1966"], 
     false,
     "", "");
   qList.push(Q1); // add new Question object to arry list of questions
 
   // build question 2
-  Q = new Question(2,"The first woman in space was of what nationality?","Russian", ["United States", "China"],true, "assets/images/valentina tereshkova.jpg","Valentina Tereshkova in 1963, on Vostok 6");
+  Q = new Question(2,
+    "The first woman in space was of what nationality?",
+    "Russian",
+    ["Russian", "United States", "China"],
+    true, 
+    "assets/images/valentina tereshkova.jpg","th first woman to go into space was Valentina Tereshkova in 1963, on Vostok 6");
   qList.push(Q); // add new Question object to arry list of questions
 
   //build question 3
-  Q =  new Question(3,"What was John Glenn's major accomplishment in the space program?","First American to orbit the Earth.",["Walked on the Moon", "Apollo Program mission commander"],true,"assets/images/john glenn.jpg", "3 orbits in 1962");
+  Q =  new Question(3,
+    "What was John Glenn's major accomplishment in the space program?",
+    "First American to orbit the Earth.",
+    ["First American to orbit the Earth.","Walked on the Moon", "Apollo Program mission commander"],
+    true,"assets/images/john glenn.jpg", "John Glenn made 3 orbits of the Earth in 1962");
   qList.push(Q);
 
   //build question 4
   Q = new Question(4,
     "Who was the first US woman in space?",
-    "Sally Ride",["Judith Resnik", "Chirstina Koch"],true,"assets/images/sally ride.jpg", "1983, Shuttle Columbia");
+    "Sally Ride",
+    ["Sally Ride","Judith Resnik", "Chirstina Koch"],
+    true,
+    "assets/images/sally ride.jpg", 
+    "Sally Ride went into space in 1983, on the Shuttle Columbia");
   qList.push(Q);
 
   //build question 5
   Q = new Question(5,
     "Who was the first woman to make 2 space flights?",
     "Svetlana Savitskaya",
-    ["Valentina Tereshkova", "Yelena Serova"],true,"assets/images/svetlana savitskaya.jpg", 
+    ["Svetlana Savitskaya","Valentina Tereshkova", "Yelena Serova"],
+    true,
+    "assets/images/svetlana savitskaya.jpg", 
     "");
   qList.push(Q);
 
@@ -72,16 +87,19 @@ function build_qList() {
     Q = new Question(6,
       "Who was the first man to walk on the Moon?",
       "Neil Armstrong",
-      ["Scott Carpenter", "John Glenn", "Buzz Aldrin"],
-      true,"assets/images/neil armstrong.jpg", "1983, Shuttle Columbia");
+      ["Neil Armstrong","Scott Carpenter", "John Glenn", "Buzz Aldrin"],
+      true,
+      "assets/images/neil armstrong.jpg", "1983, Shuttle Columbia");
     qList.push(Q);
 
     //build question 7
     Q = new Question(7,
       "What Nation orbited the first artificial satellite?",
       "Soviet Union",
-      ["China", "United States"],
-      true,"assets/images/sputnik 1.jpg", "Sputnik 1, launched October 4, 1957, burned on re-entry Jan 4, 1958");
+      ["Soviet Union","China", "United States"],
+      true,
+      "assets/images/sputnik 1.jpg", 
+      "Sputnik 1 was launched October 4, 1957, and orbited for 3 months, burning up on re-entry on Jan 4, 1958");
       qList.push(Q);
     
       // console.log("end building question list");

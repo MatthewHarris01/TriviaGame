@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>Fill Array with unique random values</title>
+</head>
+<body>
+  <h1>Open the console!</h1>
+  <p>The code in this page tests code to populate an array with unique random numbers.</p>
+
+
+    
+<script>
+  console.log("this is code in the page");
+
+  var nArray = [];  //this is an array to hold random numbers, the idea is to generarte random numbers and fill this array with
+                      // unique values.
+
+  console.log("starting test");
+  console.log("the result of notInArry when array is empty is: " + notInArray(1));
+
+
+
+// console.log("begin filling array 0-2");
+
+
+ console.log("execute While loop until array has 7 elements");
+// for (i=0; i < 3; i++) {
+  // console.log("outer loop counter is: " + i);
+  //now execute an inner loop to gnerate a random number and push the value into the numArray for as long as the new number does not already exist in numArray
+  var limit = 0;
+  while (nArray.length < 4) {  
+    console.log("SIZE OF NARRAY: " + nArray.length);
+    limit++
+    console.log("getting random number");
+    var tmp = Random0_3();
+    console.log("ADD NUMBER " + tmp);
+    console.log("inner while loop");
+    console.log("value of random number: " + tmp);
+    console.log("size of nArray: " + nArray.length);
+    // nArray.push(tmp);
+    if (notInArray(tmp)) {
+      nArray.push(tmp);
+    }
+    console.log("size of nArray, after adding new number: " + nArray.length);
+    // limit++
+    console.log("LIMIT COUNTER: " + limit);
+    if (limit > 50) {
+      console.log("THIS SHOULD STOP LOOP");
+      break;
+    }
+  }
+// }
+console.log("the numArray looks like this at end of while loop: " + nArray);
+
+// deliberate compile failure
+// console.log(
+
+  function Random0_6() {
+    // this function produces a random number from 0 to 6, inclusive
+    var tmp = (Math.floor(Math.random() * 7 )); //+1); //gets random num 0-6 inclusive
+    return tmp;
+  }
+
+  function Random0_2 () {
+      // this function produces a random number from 0 to 2
+      var tmp = (Math.floor(Math.random() * 3 ));  //gets random num 0-2 inclusive
+
+      return tmp;
+    }
+
+    function Random0_3() {
+      //this function returns a random number from 0 to 3, inclusive
+      var tmp = (Math.floor(Math.random() * 4 ));  //gets random num 0-2 inclusive
+      tmp = (Math.floor(Math.random() * 4 )); //+1); //gets random num 0-3 inclusive
+
+      return tmp;
+    }
+
+    function notInArray(n) {      
+      // this function tests whether number n is already in an array. the n argument is the number whose existence is to be tested for
+    //NOTE: the array being tested must be of global scope, since there seem to be issues when passing an empty array as a function parameter.
+      // the argument n is the array to be tested, the global array is nArray
+      console.log("inside notInArray function");
+      console.log("type of nArray: " + typeof nArray);
+      var rslt = true; //assume n is not in array nArray
+      console.log("the current size of the nArray is: " + nArray.length);
+
+      if (nArray.length == 0) {
+        rslt = true;
+        return true;
+      }
+      else {
+        //the array already has some numbers in it, need to iterate the array and compare each element of the array to "n"
+        console.log("LENGTH OF 'nArray': " + nArray.length);
+        console.log("VALUE OF ARGUMENT 'n'" + n);
+        for (var k=0; k < nArray.length; k++) {
+          console.log("loop counter: " + k);
+          if (n == nArray[k]) {
+            console.log("N matches element in array 'nArray'");
+            console.log("VALUE OF 'n': " + n);
+            console.log("VALUE of nArry[" + k +"] is : " + nArray[k]);
+            rslt = false; //this function must return false, if the n matches an element already in the array
+
+          }
+
+        }
+      console.log("end of notInArray function, returning: " + rslt);
+      return rslt;
+    }
+    }
+
+
+console.log("end of test code");
+</script>
+
+</body>
+</html>
