@@ -15,52 +15,127 @@
 <script>
   console.log("this is code in the page");
 
-  var nArray = [];  //this is an array to hold random numbers, the idea is to generarte random numbers and fill this array with
-                      // unique values.
+  var qOrder = [];  //this is an array to hold unique random numbers, to control the order in which Questions are displayed.
+  var aOrder3 = [];  //this is an array to hold unique random numbers to control the order in which  3 answers are displayed.
+  var aOrder4 = [];  //thsi is an array to hold unique random numbers to control the order in which 4 answers are displayed.
 
   console.log("starting test");
-  console.log("the result of notInArry when array is empty is: " + notInArray(1));
+  // console.log("the result of notInArry when array is empty is: " + notInArray(1));
 
+function TestIt() {
+  var pushIt = true;  //assume safe to add number
+  console.log("inside TestIt function");
+  // qOrder.push(0);
+  // qOrder.push(1);
+  // qOrder.push(2);
+  // qOrder.push(3);
+  // qOrder.push(4);
+  // qOrder.push(5);
+  // qOrder.push(6);
 
-
-// console.log("begin filling array 0-2");
-
-
- console.log("execute While loop until array has 7 elements");
-// for (i=0; i < 3; i++) {
-  // console.log("outer loop counter is: " + i);
-  //now execute an inner loop to gnerate a random number and push the value into the numArray for as long as the new number does not already exist in numArray
-  var limit = 0;
-  while (nArray.length < 4) {  
-    console.log("SIZE OF NARRAY: " + nArray.length);
-    limit++
-    console.log("getting random number");
-    var tmp = Random0_3();
-    console.log("ADD NUMBER " + tmp);
-    console.log("inner while loop");
-    console.log("value of random number: " + tmp);
-    console.log("size of nArray: " + nArray.length);
-    // nArray.push(tmp);
-    if (notInArray(tmp)) {
-      nArray.push(tmp);
+  console.log("starting while loop");
+  while (qOrder.length < 7) {
+  var tmp = Random0_6();
+  console.log("tmp is: " + tmp);
+  // console.log("type of tmp is: " + typeof tmp);
+  if (qOrder.length == 0) {
+    console.log("qOrder is empty!");
+    qOrder.push(tmp);
+  }
+  else {
+    console.log("qOrder is NOT empty");
+    console.log("value of tmp: " + tmp);
+    var L = qOrder.length;
+    for (i=0; i < L; i++) {
+      console.log("qOrder[" + i +"] is: " + qOrder[i]);
+      if (tmp == qOrder[i]) {
+      console.log("NEW NUMBER IS ALREADY IN THE ARRAY");
+      pushIt = false; //not okay to add this number
+      }
+      else {
+        // console.log("ADD THE NEW NUMBER");
+        // if (PushIt != false) {pushIt=true}
+        // pushIt = true;
+        // qOrder.push(tmp);
+      }
     }
-    console.log("size of nArray, after adding new number: " + nArray.length);
-    // limit++
-    console.log("LIMIT COUNTER: " + limit);
-    if (limit > 50) {
-      console.log("THIS SHOULD STOP LOOP");
-      break;
+    console.log("value of pushIt is: "+ pushIt);
+    if (pushIt == true) { 
+      console.log("ADDING NEW NUMBER");
+      qOrder.push(tmp);
     }
   }
-// }
-console.log("the numArray looks like this at end of while loop: " + nArray);
+console.log("qOrder looks like this: " + qOrder);
+console.log("size of qOrder: " + qOrder.length);
+
+// console.log( 
+
+  // for (i=0; i< qOrder.length; i++) {
+  //   if (tmp == qOrder[i]) {
+  //       console.log(tmp + " MATCHES " + qOrder[i])
+  //   }
+  // }
+  console.log("end of while loop");
+} //end of While loop
+
+  console.log("end of TestIt function");
+  console.log("qOrder looks like this: " + qOrder)
+}
+
+// console.log("begin filling array 0-6");
+function makeQOrderList() {
+  //this function populates an array with 7 unique rndom numbers
+  // var pushIt; //a boolen flag to indicate whether it is okay to push the number into the array
+  console.log("starting makeQOrderList function");
+ console.log("execute While loop until array has 7 elements");
+  if (qOrder.length > 0) {
+    // the qOrder array must be emptied.
+    console.log("qOrder array MUST BE EMPTIED");
+    do {
+      qOrder.pop();
+
+    } while (qOrder.length > 0)
+
+  }
+  while (qOrder.length < 7) {  
+    console.log("SIZE OF qOrder: " + qOrder.length);
+    // console.log("getting random number");
+    var tmp = Random0_6();
+    console.log("ADD NUMBER " + tmp);
+    console.log("value of random number: " + tmp);
+    console.log("size of qOrder: " + qOrder.length);
+    // qOrder.push(tmp);
+    console.log("determine whether it is okay to push the new number");
+    var pushIt = true; //assume it will be okay to add the number
+    if (qOrder.length == 0 ) {
+      pushIt = true; //safe to push the number if qOrder has no elements yet
+    }
+    // else {
+      // loop through the array
+      console.log("must loop through the array");
+      // for (i=0; i < qOrder.length; i++) {
+      //   if (qOrder[i] == n) {
+      //     console.log(tmp + " MATCHES " + qOrder[i]);
+      //     pushIt = false; //number found in array, not safe to push
+        }
+      // }
+      // if (pushIt === true) {
+        console.log("PUSH NEW NUMBER: " +tmp);
+        qOrder.push(tmp);
+      // }
+    // }
+    console.log("SIZE of qOrder, after adding new number: " + qOrder.length);
+  // }
+  console.log("the qOrder array looks like this at end of MakeQOrderList function: " + qOrder);
+  console.log("end of makeQOrderlist function");
+} //end of makeQOrderList function
 
 // deliberate compile failure
 // console.log(
 
   function Random0_6() {
     // this function produces a random number from 0 to 6, inclusive
-    var tmp = (Math.floor(Math.random() * 7 )); //+1); //gets random num 0-6 inclusive
+    var tmp = (Math.floor(Math.random() * 7 ));  //gets random num 0-6 inclusive
     return tmp;
   }
 
@@ -71,6 +146,110 @@ console.log("the numArray looks like this at end of while loop: " + nArray);
       return tmp;
     }
 
+    function makeAOrderList4() {
+      //this function populates the aOrder4 array with 4 unique random numbers
+      var pushIt; //a boolean flag to indicate whether we can push the random number into the array
+  console.log("starting makeAOrderList4 function");
+ console.log("execute While loop until array has 4 elements");
+
+  if (aOrder4.length > 0) {
+    // the aOrder array must be emptied.
+    console.log("aOrder4 array MUST BE EMPTIED");
+    do {
+      aOrder4.pop();
+
+    } while (aOrder4.length > 0)
+
+  }
+  while (aOrder4.length < 5) {  
+    // console.log("SIZE OF qOrder: " + qOrder.length);
+    // limit++
+    // console.log("getting random number");
+    var tmp = Random0_6();
+    // console.log("ADD NUMBER " + tmp);
+    // console.log("inner while loop");
+    // console.log("value of random number: " + tmp);
+    // console.log("size of qOrder: " + qOrder.length);
+    // qOrder.push(tmp);
+    if (notInArray(tmp, aOrder4)) {
+      aOrder4.push(tmp);
+    }
+    // console.log("size of qOrder, after adding new number: " + qOrder.length);
+    // limit++
+    // console.log("LIMIT COUNTER: " + limit);
+    // if (limit > 50) {
+      // console.log("THIS SHOULD STOP LOOP");
+      // break;
+    // }
+  }
+  console.log("the aOrder4 array looks like this at end of while loop: " + aOrder4);
+  console.log("end of makeAOrderlist4 function");
+} //end of mkaeQOrderList function
+
+function Random0_2 () {
+      // this function produces a random number from 0 to 2
+      var tmp = (Math.floor(Math.random() * 3 ));  //gets random num 0-2 inclusive
+
+      return tmp;
+    }
+
+    function makeAOrderList3() {
+      //this function populates the aOrder3 array with 3 unique random enumbers.
+  console.log("starting makeAOrderList3 function");
+ console.log("execute While loop until array has 3 elements");
+  if (aOrder3.length > 0) {
+    // the qOrder array must be emptied.
+    console.log("aOrder3 array MUST BE EMPTIED");
+    do {
+      aOrder3.pop();
+
+    } while (aOrder3.length > 0)
+
+  }
+  // var limit = 0;
+  while (aOrder3.length < 3) {  
+    // console.log("SIZE OF qOrder: " + qOrder.length);
+    // limit++
+    // console.log("getting random number");
+    var tmp = Random0_6();
+    // console.log("ADD NUMBER " + tmp);
+    // console.log("inner while loop");
+    // console.log("value of random number: " + tmp);
+    // console.log("size of qOrder: " + qOrder.length);
+    // qOrder.push(tmp);
+    if (notInArray(tmp, aOrder3)) {
+      aOrder3.push(tmp);
+    }
+    // console.log("size of qOrder, after adding new number: " + qOrder.length);
+    // limit++
+    // console.log("LIMIT COUNTER: " + limit);
+    // if (limit > 50) {
+      // console.log("THIS SHOULD STOP LOOP");
+      // break;
+    // }
+  }
+  console.log("the aOrder3 array looks like this at end of while loop: " + aOrder3);
+  console.log("end of makeAOrderlist3 function");
+} //end of mkaeQOrderList function
+
+
+// deliberate compile failure
+// console.log(
+
+  function Random0_6() {
+    // this function produces a random number from 0 to 6, inclusive
+    var tmp = (Math.floor(Math.random() * 7 ));  //gets random num 0-6 inclusive
+    return tmp;
+  }
+
+  function Random0_2 () {
+      // this function produces a random number from 0 to 2
+      var tmp = (Math.floor(Math.random() * 3 ));  //gets random num 0-2 inclusive
+
+      return tmp;
+    }
+
+
     function Random0_3() {
       //this function returns a random number from 0 to 3, inclusive
       var tmp = (Math.floor(Math.random() * 4 ));  //gets random num 0-2 inclusive
@@ -79,38 +258,56 @@ console.log("the numArray looks like this at end of while loop: " + nArray);
       return tmp;
     }
 
-    function notInArray(n) {      
-      // this function tests whether number n is already in an array. the n argument is the number whose existence is to be tested for
-    //NOTE: the array being tested must be of global scope, since there seem to be issues when passing an empty array as a function parameter.
-      // the argument n is the array to be tested, the global array is nArray
-      console.log("inside notInArray function");
-      console.log("type of nArray: " + typeof nArray);
-      var rslt = true; //assume n is not in array nArray
-      console.log("the current size of the nArray is: " + nArray.length);
+    // function notInQOrderArray(n) {      
+    //   // this function tests whether number n is already in an array. the n argument is the number whose existence is to be tested for
+    // //NOTE: the array being tested must be of global scope, since there seem to be issues when passing an empty array as a function parameter.
+    //   // the argument n is the array to be tested, the array is arr
+    //   console.log("inside notInQOrderArray function");
+    //   // console.log("type of nArray: " + typeof qOrder);
+    //   var rslt = true; //assume n is not in array nArray
+    //   console.log("the current size of the nArray is: " + qOrder.length);
 
-      if (nArray.length == 0) {
-        rslt = true;
-        return true;
-      }
-      else {
-        //the array already has some numbers in it, need to iterate the array and compare each element of the array to "n"
-        console.log("LENGTH OF 'nArray': " + nArray.length);
-        console.log("VALUE OF ARGUMENT 'n'" + n);
-        for (var k=0; k < nArray.length; k++) {
-          console.log("loop counter: " + k);
-          if (n == nArray[k]) {
-            console.log("N matches element in array 'nArray'");
-            console.log("VALUE OF 'n': " + n);
-            console.log("VALUE of nArry[" + k +"] is : " + nArray[k]);
-            rslt = false; //this function must return false, if the n matches an element already in the array
+    //   if (qOrder.length == 0) {
+    //     rslt = true;
+    //     // return true;
+    //   }
+    //   else {
+    //     //the array already has some numbers in it, need to iterate the array and compare each element of the array to "n"
+    //     console.log("LENGTH OF 'nArray': " + qOrder.length);
+    //     console.log("VALUE OF ARGUMENT 'n'" + n);
+    //     for (var k=0; k < qOrder.length; k++) {
+    //       console.log("loop counter: " + k);
+    //       if (n == qOrder[k]) {
+    //         console.log("N matches element in array 'qOrder'");
+    //         console.log("VALUE OF 'n': " + n);
+    //         console.log("VALUE of qOrder[" + k +"] is : " + qOrder[k]);
+    //         rslt = false; //this function must return false, if the n matches an element already in the array
 
-          }
+    //       }
 
-        }
-      console.log("end of notInArray function, returning: " + rslt);
-      return rslt;
-    }
-    }
+    //     }
+    //   console.log("end of notInQOrderArray function, returning: " + rslt);
+    //   return rslt;
+    // }
+    // }
+
+    console.log("calling the TestIt function");
+    TestIt();
+
+// console.log("calling the makeQOrder function");
+// makeQOrderList();
+// console.log("calling the makeQOrder function a second time");
+// makeQOrderList();
+
+// console.log("calling the makeAOrder3 function");
+// makeAOrderList3();
+// console.log("calling the makeAOrder3 function a second time");
+// makeAOrderList3();
+
+// console.log("calling the makeAOrder4 function");
+// makeAOrderList4();
+// console.log("calling the makeAOrder4 function a second time");
+// makeAOrderList4();
 
 
 console.log("end of test code");

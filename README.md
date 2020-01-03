@@ -8,6 +8,7 @@ Version 0.4 -- code started. Question object prototyped and tested, object const
 Version 0.5 -- Question object constructor completed, cod to build Question object list completed.
 Version 0.6 -- methodology to randomize order in which possible answers are displayed, and the order in which Questions are displayed has been coded and tested.
 Version 0.6 -- index2.html prototypes how questions and answers should be diplayed. index3.html prototypes how answers should be displayed. Both prototypes are complet. Styles for question and answer elements are in the style.css file. A generic image has been added for questions which to not have a specific associated image.
+Version 0.7 -- back to spinning my wheels on the unique random number array code. i keep getting infinite loops, and I really can't seem to find why. I'm going to revert back to the last working version, and see if I can get thing straghtend out tomorrow. neutral image for qustions tht don't have an image has been created as "blank.jpg"
 
 NOTE: THE RANDOM NUMBERS2.HML DOCUMENT IS FOR CODE TESTING ONLY, AND WILL BE REMOVED FROM FINAL PROJECT FILES.
 NEXT TO DO: 1) build code to display questions and answers.
