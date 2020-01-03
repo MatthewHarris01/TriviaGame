@@ -11,10 +11,17 @@
 //   xtraInfo : ""
 // }
 
-// global variables
-var timeLeft = 30; // time left to answer question
-var idUsed; // array to help figure out which id numbers have already been used.
-var qList= [];  // array of question objects
+// GLOBAL VARIABLES
+var timeLeft = 30;  // time left to answer question NOTE: this variable should NEVER be changed.
+var idUsed = [];    // array to help figure out which id numbers have already been used.
+var currentQ;       //reference to the current question objec being displayed.
+var qList = [];     // array of question objects
+var qIndex = 0;     //index to special array governing the order in which questiona are to be displayed
+var correctAnswers = 0;    //count of questions answered correctly
+var incorrectAnswers = 0;   //count of questions not answered correctly
+var notAnswered = 0;      //count of questions not answered before timer expired
+var roundsPlayed = 0;     // count of complete rounds played (all question shown)
+
 
 
 //OBJECT CONSTRUCTOR FOR QUESTION  OBJECT
@@ -106,34 +113,34 @@ function build_qList() {
 } //  end buildqList function
 
 
+console.log("size of question arry is: " + qList.length);
 
-console.log("this is the .js include file");
+// console.log("this is the .js include file");
 
 
 
 
 // testing how to check whether a randomly generated id has already been used.
-var tmp = getRandom1_7;
-if (idNotUsed ==true) {
-  // if ifNotUsed is true, then add the new random number to the idUsed array
-  idused.push(tmp);
-}
+// var tmp = getRandom1_7;
+// if (idNotUsed ==true) {
+//   // if ifNotUsed is true, then add the new random number to the idUsed array
+//   idused.push(tmp);
+// }
 
 
-function idNotUsed() {
-  // this function returns true if an randomly gnerated id number has not yet been used, false if it has
-  // whether or not an id has already been used is determned by whether it exists in the idUsed array
-  var rslt = false; //assume the id number has not yet been used
+// function idNotUsed() {
+//   // this function returns true if an randomly gnerated id number has not yet been used, false if it has
+//   // whether or not an id has already been used is determned by whether it exists in the idUsed array
+//   var rslt = false; //assume the id number has not yet been used
   
-  for (i=0; i < idused.lenth; i++) {
-      //iterate the contenst of the idused array
-      console.log("loop counter is: " + i);
-  }
+//   for (i=0; i < idused.lenth; i++) {
+//       //iterate the contenst of the idused array
+//       console.log("loop counter is: " + i);
+//   }
 
 
-  }
+  // }
   
-
 
 
 // generate a random number between 1 and 7, inclusive
@@ -197,9 +204,9 @@ $(document).ready(function () {
   console.log("CORRECT ANSWER is: " + qList[i].correctAnswer);
   console.log("OTHER ANSWERS ARE: ")
   console.log("iterating list of other answers (inner loop)");
-  for (k=0; k < qList[i].otherAnswers.length; k++) {
+  for (k=0; k < qList[i].Answers.length; k++) {
     console.log("loop count: " + k);
-    console.log("other answer " + k + " is " + qList[i].otherAnswers[k]);
+    console.log("other answer " + k + " is " + qList[i].Answers[k]);
   }
   console.log("done iterating other answers");
     if (qList[i].hasImage == true) {
@@ -210,6 +217,12 @@ $(document).ready(function () {
 
   }    
   console.log("QUESTION OBJECT LIST TESTING COMPLETE");
+
+
+currentQ = qList[2];
+console.log("current size of question list: " + qList.length);
+console.log("show the id of qlist[2]" + qList[2].id);
+console.log("the current question is: " + currentQ.id);
 
 
   // TESTNG COUNTDOWN
@@ -229,8 +242,25 @@ $(document).ready(function () {
     } 
     ) // end of startgame button event
 
-    $("#Answer0").on("click", function() {
-      console.log("answer 0 clicked");
+    $(".AnswerChoice").on("click", function() {
+      //check whether the text of the clicked anwer button matches the "correctAnswer" of the current question
+      console.log("an answer button was clicked");
+      var s = this.innerText
+      s = s.toUpperCase();
+      console.log("answer text: " + s);
+      var s1 = currentQ.correctAnswer;
+      s1 = s1.toUpperCase();
+      console.log("correct answer: " + s1);
+
+      if (s === s1) {
+          console.log("CORRECT ANSWER");
+      }
+      else {
+        console.log("WRONG ANSWER");
+      }
+
+      
+
     }
     
     ) // end of Answer 0 click event
