@@ -12,21 +12,43 @@
 // }
 
 // GLOBAL VARIABLES
-var timeLeft = 30;  // time left to answer question NOTE: this variable should NEVER be changed.
+var qtimeLeft = 30;  // time left to answer question NOTE: this variable's value should NEVER be changed.
+var ansTimeLeft = 10;  // number of seconds before moving on to next questin when answer is displayed.
 var idUsed = [];    // array to help figure out which id numbers have already been used.
-var currentQ;       //reference to the current question objec being displayed.
+var currentQ;       //reference to the current question object being displayed.
 var qList = [];     // array of question objects
 var qIndex = 0;     //index to special array governing the order in which questiona are to be displayed
+var QTimerID;        //holds the timer id returned by setTimer (for Questions) so that it can be canceled later
+var ATimerID;       //holds th etimer id returned by setTimer (for answers) so that it can be canceled later
 var correctAnswers = 0;    //count of questions answered correctly
 var incorrectAnswers = 0;   //count of questions not answered correctly
 var notAnswered = 0;      //count of questions not answered before timer expired
 var roundsPlayed = 0;     // count of complete rounds played (all question shown)
 
+//ANSWER CLICK EVENT HANDLER
+     // AnswerChoice
+    //  $(".AnswerChoice").click, function() {
+    //   //check whether the text of the clicked answer button matches the "correctAnswer" of the current question
+    //   console.log("ANSWER CLICKED");
+    //   var s = this.innerText
+    //   s = s.toUpperCase();
+    //   console.log("answer text: " + s);
+    //   var s1 = currentQ.correctAnswer;
+    //   s1 = s1.toUpperCase();
+    //   console.log("correct answer: " + s1);
+
+    //   if (s == s1) {
+    //       console.log("CORRECT ANSWER");
+    //   }
+    //   else {
+    //     console.log("WRONG ANSWER");
+    //   }
+    // } //END ANSWER CLICK FUNCTION
+    //  )
 
 
 //OBJECT CONSTRUCTOR FOR QUESTION  OBJECT
 function Question(id, q, correctAnswer, otherAnswers, hasImage, imageURL, info) {
-  // console.log("Question constructor");
   this.id = id;
   this.q = q;
   this.correctAnswer = correctAnswer;
@@ -34,24 +56,21 @@ function Question(id, q, correctAnswer, otherAnswers, hasImage, imageURL, info) 
   this.hasImage = hasImage;
   this.imageURL = imageURL;
   this.xtraInfo = info;
-  // console.log("end of Question constructor");
 } //end of question object constructor
 
-
-
-
 function build_qList() {
-  // this function builds the list of question objects, inserting each ne question into the qList array
-  // console.log("start building questin list");
-  // var Q;  //temp variable to hold new Question object
+  // this function builds the list of question objects, inserting each new question into the qList array
+
+  // console.log("start building question list");
   // build question 1
-  var Q1 = new Question(1,
+  var Q = new Question(1,
     "What year was NASA founded?",
     "1958", 
     ["1958","1950", "1960","1966"], 
-    false,
-    "", "");
-  qList.push(Q1); // add new Question object to arry list of questions
+    true,
+    "assets/images/nasa logo.jpg", 
+    "NASA was established in 1958, succeeding the National Advisory Committee for Aeronautics.");
+  qList.push(Q); // add new Question object to arry list of questions
 
   // build question 2
   Q = new Question(2,
@@ -59,7 +78,8 @@ function build_qList() {
     "Russian",
     ["Russian", "United States", "China"],
     true, 
-    "assets/images/valentina tereshkova.jpg","th first woman to go into space was Valentina Tereshkova in 1963, on Vostok 6");
+    "assets/images/valentina tereshkova.jpg","th first woman to go into space was Valentina Tereshkova in 1963, on Vostok 6",
+    "Valentina Tereshkovs was the first woman in space, on the Vostok 6 mission in 1963.");
   qList.push(Q); // add new Question object to arry list of questions
 
   //build question 3
@@ -90,62 +110,29 @@ function build_qList() {
     "");
   qList.push(Q);
 
-    //build question 6
-    Q = new Question(6,
-      "Who was the first man to walk on the Moon?",
-      "Neil Armstrong",
-      ["Neil Armstrong","Scott Carpenter", "John Glenn", "Buzz Aldrin"],
-      true,
-      "assets/images/neil armstrong.jpg", "1983, Shuttle Columbia");
-    qList.push(Q);
+  //build question 6
+  Q = new Question(6,
+    "Who was the first man to walk on the Moon?",
+    "Neil Armstrong",
+    ["Neil Armstrong","Scott Carpenter", "John Glenn", "Buzz Aldrin"],
+    true,
+    "assets/images/neil armstrong.jpg", "1983, Shuttle Columbia");
+  qList.push(Q);
 
-    //build question 7
-    Q = new Question(7,
-      "What Nation orbited the first artificial satellite?",
-      "Soviet Union",
-      ["Soviet Union","China", "United States"],
-      true,
-      "assets/images/sputnik 1.jpg", 
-      "Sputnik 1 was launched October 4, 1957, and orbited for 3 months, burning up on re-entry on Jan 4, 1958");
-      qList.push(Q);
-    
-      // console.log("end building question list");
+  //build question 7
+  Q = new Question(7,
+    "What Nation orbited the first artificial satellite?",
+    "Soviet Union",
+    ["Soviet Union","China", "United States"],
+    true,
+    "assets/images/sputnik 1.jpg", 
+    "Sputnik 1 was launched October 4, 1957, and orbited for 3 months, burning up on re-entry on Jan 4, 1958");
+  qList.push(Q);    
 } //  end buildqList function
-
-
-console.log("size of question arry is: " + qList.length);
-
-// console.log("this is the .js include file");
-
-
-
-
-// testing how to check whether a randomly generated id has already been used.
-// var tmp = getRandom1_7;
-// if (idNotUsed ==true) {
-//   // if ifNotUsed is true, then add the new random number to the idUsed array
-//   idused.push(tmp);
-// }
-
-
-// function idNotUsed() {
-//   // this function returns true if an randomly gnerated id number has not yet been used, false if it has
-//   // whether or not an id has already been used is determned by whether it exists in the idUsed array
-//   var rslt = false; //assume the id number has not yet been used
   
-//   for (i=0; i < idused.lenth; i++) {
-//       //iterate the contenst of the idused array
-//       console.log("loop counter is: " + i);
-//   }
-
-
-  // }
-  
-
-
 // generate a random number between 1 and 7, inclusive
 function getRandom1_7() {
-  //this function returns a random number betwee 1 and 7, inclusive
+  //this function returns a random number between 1 and 7, inclusive
   var tmp =  (Math.floor(Math.random() * 7 )+1);  //generate a random number from 1 to 7 inclusive
   console.log("inside getRandom7 function, result is: " + tmp);
   return tmp;
@@ -156,11 +143,18 @@ function getRandom1_7() {
 function startGame() {
   // this function inititializes the global variables for the game, and starts the game timer.
   console.log("START GAME FUNCTION");
-  timeLeft = 30 // initialize the turn counter
-  setTimeout(updateCountDown, 1000); // set timer for 1 second
-
+  timeLeft = 30 // initialize the timer counter
+  
   //build the question list array
   build_qList();
+  qIndex = 0;   //question index is 0, the first question in the question list
+  currentQ = "no current question";   //current questin has not yet been selected
+  correctAnswers = 0;   //no questions answered yet in this round
+  incorrectAnswers = 0; //no questions answered yet in this round
+  roundsPlayed++  //increment count of rounds played
+
+  displayQuestion(qIndex);
+
 
   //remove the start game button
   $("#startgame").remove();
@@ -169,102 +163,231 @@ function startGame() {
   console.log("end of start game function");
 } //end of start game functin
 
-function updateCountDown() {
-  // console.log("inside updateCountDown function");
-  timeLeft = timeLeft-1;
-  document.getElementById("counter").innerText = timeLeft;
+function displayQuestion(idx) {
+  //this function displays a question and its answers, the idx parameter is the index of the question to be displayed in the 
+  //qList array, it should be a value between o and 6 (there are 7 questions in the qList array)
+  console.log("inside displayQuestion function");
+  // console.log("the question index (qIndx) is: " + idx);
+  //set the currentQ global variable
+  currentQ = qList[idx];
+
+  //create Question element in a <p> tag with class=Question and id=Question
+  var Ptag = $("<p>").text(currentQ.q);   //addClass("Question");
+  Ptag.addClass("Question"); //set the class
+  $(Ptag).attr("id", "Question");  //set the element id
+  // append the question <p> element to the game div element
+  // console.log("APPENDING Ptag");
+  var game_div = document.getElementById("game-container");
+  $(game_div).append(Ptag);
+
+  //NOW ADD THE ANSWERS TO THE DISPLAY
+  for (k=0; k < currentQ.Answers.length; k++) {
+    console.log("ADDING ANSWERS");
+  var ans = $("<p>").text(currentQ.Answers[k]);  //create new p tag for answer, with answer text
+  $(ans).attr("class", "AnswerChoice");  //set the element class
+    $(ans).attr("id", "Ans" + k); //set id for answer
+    var game_div = document.getElementById("game-container");
+    $(game_div).append(ans);  //add the answer to the display
+  }
+  //START THE TIMER FOR THIS QUESTION
+  QTimerID = setTimeout(updateQCountDown, 1000); // set timer for 1 second
+
+  console.log("end of displayQuestion function");
+} // end of displayQuestion function
+
+function updateQCountDown() {
+  //this function updates the countdown display on-screen for Question time remainng
+  qtimeLeft = qtimeLeft-1;  //decrement the amount of time left
+  document.getElementById("counter").innerText = timeLeft;  //update what is shown on-screen
   
-  console.log("new time remaining: " + timeLeft);
-  if (timeLeft <= 0) {
+  if (qtimeLeft <= 0) {
     console.log("PLAYER HAS RUN OUT OF TIME");
-    clearTimeout(updateCountDown);
+    clearTimeout(QTimerID); //stop the timer event
+
+    //display the answer
+    displayAnswer("ot");
   }
   else {
-  setTimeout(updateCountDown, 1000);
+  QTimerID=setTimeout(updateQCountDown, 1000);
   }
 }
 
+function updateACountDown() {
+  //this function updates the countdown display on-screen for time until next Question, while Answer is on display
+
+  ansTimeLeft = ansTimeLeft-1 //decrement the amount of time left to display the answer
+  //update what is shown on-screen
+  document.getElementById("AnsTime").innerText = "Next question will display in about " + ansTimeLeft + " seconds.";
+  
+  if (ansTimeLeft <= 0) {
+    console.log("DISPLAY NEXT QUESTION");
+    clearTimeout(ATimerID); //stop the timer event
+
+    if (qIndex == 6) {
+      // all questions have already been shown, this is starting a new round
+      roundsPlayed++ //increment count of rounds played
+      displayScore(); //show score for the end of this round
+    }
+    else {
+      qIndex++  //increment the question index
+      clearGameDisplay();
+      displayQuestion(qIndex);  //display the next question
+    }
+
+  }
+  else {
+  ATimerID=setTimeout(updateACountDown, 1000);
+  }
+}
+function clearGameDisplay() {
+  //this function empties the game display are to ready it for a new question display.
+  console.log("EMPTY THE GAME DISPLAY AREA");
+}
+
+function displayScore() {
+  //this function displays the score after all questions have been shown.
+  console.log("inside displayScore function");
+
+  console.log("DISPLAY FINAL SCORE FOR THIS ROUND")
+  console.log("wins " + correctAnswers);
+  console.log("losses " + incorrectAnswers);
+  console.log("time outs: " + notAnswered);
+  console.log("rounds played " + roundsPlayed);
+
+  console.log("end of displayScore function");
+} //end of displayScore function
+
+function displayAnswer(msg) {
+  //this function displays the answer to the question referenced by currentQ
+  //if the msg parameter is "ot" the user ran out of time to answer the question
+  var imgurl = ""; // url of the image to display
+
+  console.log("inside displayAnswer function");
+  console.log("The msg parameter is: " + msg);
+
+  clearTimeout(QTimerID); //STOP TIMER EVENT
+
+  //clear the answer choices from the screen
+  $(".AnswerChoice").remove();
+
+
+//Select the correct text for whether user ran out of time, answered correctly or incorrectly
+  if (msg == "ot") { 
+    console.log("USER RAN OUT OF TIME");
+    notAnswered++ //increment count of questins not answered
+    //create note to user
+    var Ptag = $("<p>").text("You ran out of time, the correct answer is below.");
+  }
+  else if (msg == "Correct") {
+    console.log("USER SELECTED CORRECT ANSWER");
+    correctAnswers++  //increment count of correct answsers
+    //create note to user
+    var Ptag = $("<p>").text("You chose the CORRECT Answer as shown below!");
+  }
+  else if (msg == "Incorrect") {
+    console.log("USER SELECTED WRONG ANSWER");
+    incorrectAnswers++  //increment count of incorrect answers
+    //create note to user
+    var Ptag = $("<p>").text("Your answer was INCORRECT, the correct answer is below.");
+  }
+
+    //add p tag with the outcome message.
+    Ptag.addClass("game-head"); //set the class, no id needed.
+    var game_div = document.getElementById("game-container");
+    $(game_div).append(Ptag); //add element to screen
+
+    //DISPLAY THE CORRECT ANSWER
+    var txt = currentQ.correctAnswer
+    // console.log("correct answer is: " + txt);
+    var Ptag = $("<p>").text(txt);
+    Ptag.addClass("Question"); //set the class, no id needed.
+    game_div = document.getElementById("game-container");
+    $(game_div).append(Ptag); //add element to screen
+
+    console.log("display image: " + imgurl);
+  
+    if(currentQ.hasImage == true) {
+      console.log("THERE IS AN IMAGE TO DISPLAY")
+      imgurl = currentQ.imageURL
+      }
+      else {
+        console.log("DISPLAY GENERIC IMAGE");
+        imgurl = "assets/images/blank.jpg"
+      }
+
+      var imgTag = $("<img src='" + imgurl +"'> alt='Answer Image");
+      imgTag.addClass("ansImage");  // set class for image
+      game_div = document.getElementById("game-container");
+      $(game_div).append(imgTag); //add element to screen
+
+      //show the "extra" info
+      if (currentQ.xtraInfo == "") {
+        console.log("there is no extra info");
+        txt = "";
+      }
+      else {
+        txt = currentQ.xtraInfo;
+      }
+      Ptag = $("<p>").text(txt);
+      Ptag.addClass("Question"); //set the class, no id needed.
+      game_div = document.getElementById("game-container");
+      $(game_div).append(Ptag); //add element to screen
+      
+
+      //add p tag element to display time remaining befoer next question
+      txt= "Next question will display in about 10 seconds"
+      Ptag = $("<p>").text(txt);
+      Ptag.addClass("game-head"); //set the class
+      Ptag.attr("id", "AnsTime" );
+      game_div = document.getElementById("game-container");
+      $(game_div).append(Ptag); //add element to screen
+
+
+        //finally, set up the timer to move on to the next question
+        ansTimeLeft=10; //set time before moving on to next quest as 10 seconds
+        ATimerID = setTimeout(updateACountDown, 1000);
+
+
+  console.log("end of displayAnswer function");
+} //end of displayAnswer function
 
 /* only do work if the document is ready */
 $(document).ready(function () {
   console.log("inside document is ready function");
 
-  //Question object testing
-  console.log("TESTING QUESTION OBJECT LIST");
-  // console.log(qList);
-  console.log("build question list");
-  build_qList();
-  console.log("size of question list: " + qList.length );
-
-  console.log("iterate question list");
-  for (i=0; i < qList.length; i++) {
-    console.log("qList index is: " + i );
-    console.log("question ID is: " + qList[i].id);
-    console.log("QUESTION IS: "+ qList[i].q);
-  console.log("CORRECT ANSWER is: " + qList[i].correctAnswer);
-  console.log("OTHER ANSWERS ARE: ")
-  console.log("iterating list of other answers (inner loop)");
-  for (k=0; k < qList[i].Answers.length; k++) {
-    console.log("loop count: " + k);
-    console.log("other answer " + k + " is " + qList[i].Answers[k]);
-  }
-  console.log("done iterating other answers");
-    if (qList[i].hasImage == true) {
-      console.log("the question has a related image");
-      console.log("the url to the image is: " + qList[i].imageURL);
-    }
-      console.log("EXTRA INFO: " + qList[i].xtraInfo);
-
-  }    
-  console.log("QUESTION OBJECT LIST TESTING COMPLETE");
-
-
-currentQ = qList[2];
-console.log("current size of question list: " + qList.length);
-console.log("show the id of qlist[2]" + qList[2].id);
-console.log("the current question is: " + currentQ.id);
-
-
-  // TESTNG COUNTDOWN
-  // console.log("starting timer test");
-
-  // setTimeout(updateCountDown, 1000); // set timer for 1 second
-
-  // console.log("end of timer test");
-
-
-
+  //EVENT HANDLER FOR CLICKING START GAME BUTTON
   $("#startgame").on("click", function() {
     //  start the game
     console.log("start game button clicked")
     startGame();
-      // alert("Start game button clicked!");
     } 
     ) // end of startgame button event
 
-    $(".AnswerChoice").on("click", function() {
-      //check whether the text of the clicked anwer button matches the "correctAnswer" of the current question
-      console.log("an answer button was clicked");
+      //EVENT HANDLER FOR CLICKING AN ANSWER
+    $('body').on('click', ".AnswerChoice",  function() {
+      //check whether the text of the clicked answer button matches the "correctAnswer" of the current question
+      console.log("ANSWER CLICKED");
       var s = this.innerText
       s = s.toUpperCase();
       console.log("answer text: " + s);
       var s1 = currentQ.correctAnswer;
       s1 = s1.toUpperCase();
       console.log("correct answer: " + s1);
-
-      if (s === s1) {
+      if (s == s1) {
           console.log("CORRECT ANSWER");
+          displayAnswer("Correct");
       }
       else {
         console.log("WRONG ANSWER");
+        displayAnswer("Incorrect");
       }
-
-      
-
-    }
+    } //END ANSWER CLICK FUNCTION
     
-    ) // end of Answer 0 click event
+    ) // end of Answer click event
+
+
 
   console.log("end of document ready function");
 } //end of document ready function
 ) //end of document ready evant handler parameter list
+
