@@ -198,7 +198,8 @@ function displayQuestion(idx) {
 function updateQCountDown() {
   //this function updates the countdown display on-screen for Question time remainng
   qtimeLeft = qtimeLeft-1;  //decrement the amount of time left
-  document.getElementById("counter").innerText = timeLeft;  //update what is shown on-screen
+  document.getElementById("counter").innerText = qtimeLeft;  //update what is shown on-screen
+  // console.log("time remaining: " + qtimeLeft);
   
   if (qtimeLeft <= 0) {
     console.log("PLAYER HAS RUN OUT OF TIME");
@@ -209,6 +210,21 @@ function updateQCountDown() {
   }
   else {
   QTimerID=setTimeout(updateQCountDown, 1000);
+  }
+}
+
+function playsound(chc) {
+  // this function attempts to play a sound. The sound to be played is specified by the value in the chc parameter.
+
+  if (chc == "losesound") { 
+    console.log("play win sound");
+    var snd = document.getElementById("losesound");
+    snd.play();
+  }
+  else {
+    console.log("play lose sound");
+    var snd = document.getElementById("winsound");
+    snd.play();
   }
 }
 
@@ -240,8 +256,32 @@ function updateACountDown() {
   }
 }
 function clearGameDisplay() {
-  //this function empties the game display are to ready it for a new question display.
+  //this function empties the game display area to ready it for a new question display.
+  console.log("inside the clearGameDisplay function");
+
+  console.log("current question index: " + qIndex);
   console.log("EMPTY THE GAME DISPLAY AREA");
+
+  // NO, THIS REMOVES TOO MUCH
+  // $('p:not(first-child)').remove(); //removes all p elements except the first
+  //create a var that points to the game area
+
+  // var gamearea = $("#game-div");
+
+  //remove all elements with class game-head
+  $(".game-head").remove();
+  // alert("all game-head class elements removed");
+
+  //remove all elements with class Question
+  $(".Question").remove();
+  // alert("all question class elements removed");
+
+  //remove all elements with class ansImage
+  $(".ansImage").remove();
+  // alert("all ansImage class elements removed");
+
+
+  console.log("end of clearGameDisplay function")
 }
 
 function displayScore() {
@@ -277,18 +317,21 @@ function displayAnswer(msg) {
     notAnswered++ //increment count of questins not answered
     //create note to user
     var Ptag = $("<p>").text("You ran out of time, the correct answer is below.");
+    playsound("losesound");
   }
   else if (msg == "Correct") {
     console.log("USER SELECTED CORRECT ANSWER");
     correctAnswers++  //increment count of correct answsers
     //create note to user
     var Ptag = $("<p>").text("You chose the CORRECT Answer as shown below!");
+    playsound("win");
   }
   else if (msg == "Incorrect") {
     console.log("USER SELECTED WRONG ANSWER");
     incorrectAnswers++  //increment count of incorrect answers
     //create note to user
     var Ptag = $("<p>").text("Your answer was INCORRECT, the correct answer is below.");
+    playsound("losesound");
   }
 
     //add p tag with the outcome message.

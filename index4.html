@@ -6,7 +6,7 @@
     <meta author="Matthew S Harris">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
-    <title>Space Exploration Trivia Game</title>
+    <title>Score display prototype</title>
 
     <!-- linke to styles-->
     <link rel="stylesheet" type="text/css" href="assets/css/style.css" <link rel="stylesheet" type="text/css"
@@ -36,14 +36,20 @@
 <div class="game-div" id="game-container">  
   <p style="color:yellow;text-align:center">Time remaining: <span id="counter" style="color:red;">30</span>.</p>
 
-  <button id="startgame" style="text-align:center;margin-left:auto;margin-right:auto;background-color: pink;">Start Game</button>
+    <div class="scorebox" id="scoredisplay">
 
+      <p class="score">Rounds Played: 10.</p>
+      <p class="score">Correct Answers: 7 (100%).</p>
+      <p class="score">Incorrect Answers: 0.</p>
+      <p class="score">Questions timed-out: 0.</p>
+      <p class="score" id="nextRoundTime">Next Round starts in about 15 seconds.</p>
+
+
+    </div>
+  
 </div>  <!--end of game-div div-->
 
 
-
-<audio id=winsound src="assets/sounds/win.wav" type="audio/wav"></audio>
-<audio id=losesound src="assets/sounds/youlose.wav" type="audio/wav"></audio>
 
 
 </body>

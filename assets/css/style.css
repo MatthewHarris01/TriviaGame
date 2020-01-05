@@ -54,3 +54,22 @@ img.ansImage {
   margin-top: 5px;
   padding:0;"
 }
+
+
+div.scorebox {
+   border:4px black;
+   width:60%;
+   /*height:40%; */
+   background-color: blanchedalmond;
+   margin-Left:auto;
+   margin-right:auto;
+   padding:5px;"
+}
+
+p.score {
+  font-family:Verdana, Geneva, Tahoma, sans-serif;
+  font-size:14pt;
+  padding:0;
+  margin:4pt;
+
+}
