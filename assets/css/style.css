@@ -63,13 +63,14 @@ div.scorebox {
    background-color: blanchedalmond;
    margin-Left:auto;
    margin-right:auto;
-   padding:5px;"
+   padding:5px;
 }
 
 p.score {
   font-family:Verdana, Geneva, Tahoma, sans-serif;
+  color: blanchedalmond;
   font-size:14pt;
+  font-weight:bold;
   padding:0;
   margin:4pt;
-
 }

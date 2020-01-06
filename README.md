@@ -12,9 +12,9 @@ Version 0.7 -- back to spinning my wheels on the unique random number array code
 Version 0.8 -- after alost 12 hours of trying to make the randomization of questions and answers work without success, I have given up on that feature. As of 0.8, question display and answer selection works, and answer display works. A neutral placeholder image has been created for questions whose answers do not have an associated image.
 Version 0.9 -- index4.html is a prototype of the score display, and will be removed from final project files.
 ADDED sound files in assets/sounds, for win/lose sounds; sounds play correctly!
+Version 0.91 -- had trouble adding a div inside the game-play area, and to avoid spinning my wheels for an excessive amount of time, decided to just display the score information in the game-play area, and display the score information with the same technique used to display questions and answers. NOTE that the prototype files, index2.html, index3.html, index4.html, and the testing document "random numbers2.html" have all been removed from the project files.
+Version 0.92 -- everything is complete, but have some bugs that appear after showing the final score. After trying to resolve those bugs, other stuff broke, and now the game does not move on from showing the answer to the initial question. I hate turning work in late, but geven that is it afte 2 am, I just seem to be spinning my wheels on this for now. I will have to see if I can get things wrapped up tomorrow, and jsut bite the bullet and turn the project in late, I don't really see what else to do for now.
 
-NOTE: THE RANDOM NUMBERS2.HML DOCUMENT IS FOR CODE TESTING ONLY, AND WILL BE REMOVED FROM FINAL PROJECT FILES.
-NEXT TO DO: 1) write code to display score after an entire round of questions has been completed.
-2) timer code to delay for 15 seconds, and then repeat the list of questions.
-3) code to clear the score display, and prepare the game area for a new round of qustions and answers.
+NEXT TO DO: 1) timer code to delay for 10 seconds after showing score, and then repeat the list of questions.
+
 
