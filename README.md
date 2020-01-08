@@ -1,6 +1,6 @@
 # TriviaGame
 play a timed trivia game with the computer.
-Version 1.0 -- all code completed and working.
+Version 1.0 -- all code completed and working, added a sound for when question is displayed.
 Version 0.1 -- file placeholders created
 Version 0.2 -- favicon file added.
 Version 0.3 -- app.js file added. .css file partially populated. Images added.
