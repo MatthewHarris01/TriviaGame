@@ -14,39 +14,29 @@
 // GLOBAL VARIABLES
 var qtimeLeft = 20;  // time left to answer question NOTE: this variable's value should NEVER be changed.
 var ansTimeLeft = 10;  // number of seconds before moving on to next questin when answer is displayed.
-var scoreTimeLeft = 10; //number of seconds before starting a new game round when score is displayed.
+var idUsed = [];    // array to help figure out which id numbers have already been used.
 var currentQ;       //reference to the current question object being displayed.
 var qList = [];     // array of question objects
 var qIndex = 0;     //index to special array governing the order in which questiona are to be displayed
 var QTimerID;        //holds the timer id returned by setTimer (for Questions) so that it can be canceled later
 var ATimerID;       //holds th etimer id returned by setTimer (for answers) so that it can be canceled later
-var AScoreTimerID   //holds the timer id returned by setTime (for score display) so that it can be canceled later
+var ScoreTimerID    //holds the timer id returnd by setTimeout (for score display) so that it can be canceled later.
 var correctAnswers = 0;    //count of questions answered correctly
 var incorrectAnswers = 0;   //count of questions not answered correctly
 var notAnswered = 0;      //count of questions not answered before timer expired
-var roundsPlayed = 1;     // count of complete rounds played (all question shown)
-// var isAnswerCount = true;  // flag used by the updateACoundtDown timer procedure to determine whether the count down is for answer 
-                          // display or something else (that is, for the score display)
-
+var roundsPlayed = 0;     // count of complete rounds played (all question shown)
 
 
 //OBJECT CONSTRUCTOR FOR QUESTION  OBJECT
-function Question(id, q, correctAnswer, Answers, hasImage, imageURL, info) {
-  this.id = id; //question id (1 - 7)
-  this.q = q; //question text
-  this.correctAnswer = correctAnswer; //the correct answer text
-  this.Answers = Answers;  //list of all answers (typically between 3 and 4 elements)
-  this.hasImage = hasImage; //boolean indicating whether this anwswer has an associated image (check this before trying to use imageURL)
-  this.imageURL = imageURL; //local url to associated image, may be empty
-  this.xtraInfo = info; //extra info about this question, like date, or other tidbits
+function Question(id, q, correctAnswer, otherAnswers, hasImage, imageURL, info) {
+  this.id = id;
+  this.q = q;
+  this.correctAnswer = correctAnswer;
+  this.Answers = otherAnswers;
+  this.hasImage = hasImage;
+  this.imageURL = imageURL;
+  this.xtraInfo = info;
 } //end of question object constructor
-
-function currentTime() {
-  //this functin returns the current time in "H:m:s" format as a string
-var today = new Date();
-var time = today.getHours() + ":" + today.getMinutes() + ":" + today.getSeconds();
-return time;
-}
 
 function build_qList() {
   // this function builds the list of question objects, inserting each new question into the qList array
@@ -69,8 +59,7 @@ function build_qList() {
     ["Russian", "United States", "China"],
     true, 
     "assets/images/valentina tereshkova.jpg",
-    "The first woman to go into space was Valentina Tereshkova in 1963, on Vostok 6",
-    "Valentina Tereshkovs was the first woman in space, on the Vostok 6 mission in 1963.");
+    "Valentina Tereshkova was the first woman in space, on the Vostok 6 mission in 1963.");
   qList.push(Q); // add new Question object to arry list of questions
 
   //build question 3
@@ -78,17 +67,18 @@ function build_qList() {
     "What was John Glenn's major accomplishment in the space program?",
     "First American to orbit the Earth.",
     ["First American to orbit the Earth.","Walked on the Moon", "Apollo Program mission commander"],
-    true,"assets/images/john glenn.jpg", "John Glenn made 3 orbits of the Earth in 1962");
+    true,"assets/images/john glenn.jpg",
+    "John Glenn was one of the Mercury Seven (military test pilots selected in 1959 by NASA as the nation's first astronauts). On February 20, 1962, Glenn flew the Friendship 7 mission, becoming the first American to orbit the Earth, and the fifth person and third American in space. He made 3 orbits of the Earth.");
   qList.push(Q);
 
   //build question 4
   Q = new Question(4,
     "Who was the first US woman in space?",
     "Sally Ride",
-    ["Sally Ride","Judith Resnik", "Christina Koch"],
+    ["Sally Ride","Judith Resnik", "Chirstina Koch"],
     true,
     "assets/images/sally ride.jpg", 
-    "Sally Ride went into space in 1983, on the Shuttle Columbia");
+    "Sally Ride went into space in 1983 on the Shuttle Columbia. She was the third woman in space overall, after USSR cosmonauts Valentina Tereshkova (1963) and Svetlana Savitskaya (1982). Ride remains the youngest American astronaut to have traveled to space, having done so at the age of 32.");
   qList.push(Q);
 
   //build question 5
@@ -98,7 +88,7 @@ function build_qList() {
     ["Svetlana Savitskaya","Valentina Tereshkova", "Yelena Serova"],
     true,
     "assets/images/svetlana savitskaya.jpg", 
-    "");
+    "On her 1984 mission, Svetlana Savitskya became the first woman to fly to space twice, and the first woman to perform a spacewalk.");
   qList.push(Q);
 
   //build question 6
@@ -107,13 +97,13 @@ function build_qList() {
     "Neil Armstrong",
     ["Neil Armstrong","Scott Carpenter", "John Glenn", "Buzz Aldrin"],
     true,
-    "assets/images/neil armstrong.jpg",
-    "Neil Armstrong stepped onto Moon's surface on July 21, 1969 at 02:56:15 UTC.");
+    "assets/images/neil armstrong.jpg", 
+    "Neil Armstrong set foot on the Moon on July 21, 1969 at 2:56:15 UTC");
   qList.push(Q);
 
   //build question 7
   Q = new Question(7,
-    "What nation orbited the first artificial satellite?",
+    "What Nation orbited the first artificial satellite?",
     "Soviet Union",
     ["Soviet Union","China", "United States"],
     true,
@@ -122,20 +112,28 @@ function build_qList() {
   qList.push(Q);    
 } //  end buildqList function
   
+// generate a random number between 1 and 7, inclusive
+function getRandom1_7() {
+  //this function returns a random number between 1 and 7, inclusive
+  var tmp =  (Math.floor(Math.random() * 7 )+1);  //generate a random number from 1 to 7 inclusive
+  console.log("inside getRandom7 function, result is: " + tmp);
+  return tmp;
+}
+
 
 // start the game
 function startGame() {
   // this function inititializes the global variables for the game, and starts the game timer.
-  console.log("inside startGame functin");
-  timeLeft = 30 // initialize the timer counter
+  console.log("START GAME FUNCTION");
+  qtimeLeft = 20 // initialize the timer counter
   
   //build the question list array
   build_qList();
   qIndex = 0;   //question index is 0, the first question in the question list
-  currentQ = "no current question";   //current question has not yet been selected
+  currentQ = "no current question";   //current questin has not yet been selected
   correctAnswers = 0;   //no questions answered yet in this round
   incorrectAnswers = 0; //no questions answered yet in this round
-  // roundsPlayed++  //increment count of rounds played
+  roundsPlayed=1  //when first starting game, this is the first round
 
   displayQuestion(qIndex);
 
@@ -145,39 +143,30 @@ function startGame() {
 
 
   console.log("end of start game function");
-} //end of start game function
+} //end of start game functin
 
 function displayQuestion(idx) {
   //this function displays a question and its answers, the idx parameter is the index of the question to be displayed in the 
   //qList array, it should be a value between o and 6 (there are 7 questions in the qList array)
   console.log("inside displayQuestion function");
-  // console.log("QUESTION INDEX: " + idx);
+  // console.log("the question index (qIndx) is: " + idx);
+  //set the currentQ global variable
 
-  //play the new question sound
   playsound("newq");
 
-  console.log(" IN DISPLY QUESTION FUNTION, CURRENT TIME: " + currentTime());
+  currentQ = qList[idx];
 
-    //start by clearing game display
-    clearGameDisplay();
+  //ensure the game display area is empty and ready for new question
+  clearGameDisplay();
 
   //RESET THE QUESTION TIME
-  qtimeLeft = 20;
+  qtimeLeft =20;
   document.getElementById("counter").innerText = qtimeLeft;  //update what is shown on-screen
 
   //ensure timer is visible
   // console.log("UNHIDE QUESTION TIME");
   document.getElementById("qtimer").style.visibility = "visible";
-
-  //if the qIndex is 6, then it must be reset to 0, a new game round has started.
-  if (qIndex == 6) {
-    // console.log("RESET QINDEX");
-    // qIndex = 0;
-  }
-
-  //set the currentQ global variable
-  currentQ = qList[idx];
-
+  
   //create Question element in a <p> tag with class=Question and id=Question
   var Ptag = $("<p>").text(currentQ.q);   //addClass("Question");
   Ptag.addClass("Question"); //set the class
@@ -189,15 +178,17 @@ function displayQuestion(idx) {
 
   //NOW ADD THE ANSWERS TO THE DISPLAY
   for (k=0; k < currentQ.Answers.length; k++) {
-    // console.log("ADDING ANSWERS");
+    console.log("ADDING ANSWER: "+ currentQ.Answers[k]);
   var ans = $("<p>").text(currentQ.Answers[k]);  //create new p tag for answer, with answer text
   $(ans).attr("class", "AnswerChoice");  //set the element class
-    // $(ans).attr("id", "Ans" + k); //set id for answer
+    $(ans).attr("id", "Ans" + k); //set id for answer
     var game_div = document.getElementById("game-container");
     $(game_div).append(ans);  //add the answer to the display
   }
   //START THE TIMER FOR THIS QUESTION
-  console.log("setting question timer");
+  //reset question time
+  console.log("RESET QUETION TIME");
+  qtimeLeft = 20;
   console.log("value of QTimerID, before setting Timeout event: " + QTimerID);
   QTimerID = setTimeout(updateQCountDown, 1000); // set timer for 1 second
   console.log("value of QTimerID, after setting Timeout event: " + QTimerID);
@@ -207,145 +198,92 @@ function displayQuestion(idx) {
 
 function updateQCountDown() {
   //this function updates the countdown display on-screen for Question time remainng
-  
   qtimeLeft = qtimeLeft-1;  //decrement the amount of time left
-  console.log("INSIDE updateQCountDown function")
+  console.log("inside update question count down");
+  console.log("question time counter: " + qtimeLeft);
+  //insert new value in screen display
   document.getElementById("counter").innerText = qtimeLeft;  //update what is shown on-screen
-  console.log("question time remaining: " + qtimeLeft);
+  // console.log("time remaining: " + qtimeLeft);
   
-  if (qtimeLeft <= 1) {
-    // console.log("PLAYER HAS RUN OUT OF TIME");
+  if (qtimeLeft <= 0) {
+    console.log("PLAYER HAS RUN OUT OF TIME");
     console.log("CANCEL QUESTION TIMER, event id is: " + QTimerID);
-    clearTimeout(updateQCountDown); //stop the timer event
+    clearTimeout(QTimerID); //stop the timer event
 
     //display the answer
     displayAnswer("ot");
   }
   else {
-    console.log("KEEP QUESTION TIMER GOING");
-  QTimerID = setTimeout(updateQCountDown, 1000);  //reset the timer countdown for another second
+  QTimerID=setTimeout(updateQCountDown, 1000);
   }
+  console.log("end of updateQCountDown function")
 } //end of updateQCountDown function
 
 function playsound(chc) {
   // this function attempts to play a sound. The sound to be played is specified by the value in the chc parameter.
 
-    if (chc == "newq")  {
-      //play the sound for a new qustion being displayed
-      console.log("play new question sound");
-      var snd = document.getElementById("newq")
-      snd.play();
-    }
+  if (chc == "newq") {
+    //play sound for new question
+    console.log("play new question sound");
+    var snd = document.getElementById("newq");
+    snd.play();
+  }
   else if (chc == "losesound") { 
-    console.log("play lose sound");
+    console.log("play win sound");
     var snd = document.getElementById("losesound");
     snd.play();
   }
   else {
-    console.log("play win sound");
+    console.log("play lose sound");
     var snd = document.getElementById("winsound");
     snd.play();
   }
-} //end of playsound function
-
-function updateScoreCountDown() {
-  //this function updates the countdown dipslay on-screen while the gaem Score is on display
-  console.log("inside updateScoreCountDown function");
-
-  var acounter = document.getElementById("AnsTime");
-  console.log("remaining score time is " + scoreTimeLeft);
-
-  console.log("QUESTION INDEX IS: " + qIndex);
-
-
-  scoreTimeLeft = scoreTimeLeft-1 //decrement the amount of time left to display the score
-
-  //update what is shown on-screen
-  if (acounter != null)  {
-    //update time left display -- the in not null test is required because there is a circumstane in which this functin gets called, and the AnsTime element does not exist.
-    // console.log("ANSTIME ELEMENT EXISTS");
-    document.getElementById("AnsTime").innerText = "Next game round will begin in about " + ansTimeLeft + " seconds.";
-    }
-
-    if (scoreTimeLeft <= 0) {
-      //time to show score has expired
-      console.log("CANCELLING UPDATESCORECOUNTDOWN TIMER EVENT");
-      clearTimeout(AScoreTimerID);
-      console.log("START NEW GAME ROUND");
-      clearTimeout(AScoretimerID); //stop the timer event
-      displayQuestion(qIndex);
-    }
-    else {
-      //more time to run, reset this timer
-    AScoreTimerID = setTimeout(updateScoreCountDown, 1000);  //restart this timer
-    }
-    console.log("end of updateScoreCountDown function");
-  } // end of updateScoreCountDown function
-
-
-
-
+}
 
 function updateACountDown() {
-  //this function updates the countdown display on-screen for Answer display
-  //since this function is also used to update the timer for score display, the isAnswer parameter is used to adjust 
-  //behavior accordingly
-  console.log("inside updateACountdown function");
-
-  var acounter = document.getElementById("AnsTime");
-
-  // console.log("QUESTION INDEX IS: " + qIndex);
-  // console.log("CURRENT QUESTION ID IS: " + currentQ.id);
-
+  //this function updates the countdown display on-screen for time until next Question, while Answer is on display
 
   ansTimeLeft = ansTimeLeft-1 //decrement the amount of time left to display the answer
-  console.log("remaining answer time is " + ansTimeLeft);
-
-  //if time left is <=0, then return, do no work here
-
-
   //update what is shown on-screen
-  if (acounter != null)  {
-    // console.log("ANSTIME ELEMENT EXISTS");
-    //there are circumstances under which this timer event runs, whan the AnsTime element may not exist, henc the need to 
-    //check whether the reasult of GetElementByID is null.
-    document.getElementById("AnsTime").innerText = "Next question will display in about " + ansTimeLeft + " seconds.";
+  document.getElementById("AnsTime").innerText = "Next question will display in about " + ansTimeLeft + " seconds.";
+  
+  if (ansTimeLeft <= 0) {
+    //check for all questions used, or display next question
+    clearTimeout(ATimerID); //stop the timer event
+  
+    if (qIndex == 6) {  //test whether qIndex has reached max
+      console.log("END OF ROUND, DISPLAY SCORE");
+      // all questions have already been shown, this is starting a new round
+      // roundsPlayed++ //increment count of rounds played
+      displayScore(); //show score for the end of this round
+    }
+    else {
+      console.log("DISPLAY NEXT QUESTION");
+      qIndex++  //increment the question index
+      clearGameDisplay();
+      displayQuestion(qIndex);  //display the next question
     }
 
-    if (ansTimeLeft <= 1)  {
-      //time to show answer has expired
-      console.log("CANCELING ANSWER TIMER, timer id: " + ATimerID);
-      clearTimeout(updateACountDown); //stop the timer event
-
-      if (qIndex == 6) {
-        //we have used all questions, it is time to show the score
-        console.log("DISPLAY SCORE");
-        // qIndex = 0; //reset question index
-        displayScore(); //show score for the end of this round
-      }
-      else {
-        //there are still more questions to show
-      ATimerID = setTimeout(updateACountDown, 1000); //keep this timer going
-      console.log("KEEPING ANSWER TIMER GOING, TIMER ID IS: " + ATimerID);  
-      console.log("DISPLAY NEXT QUESTION");
-      qIndex++
-      displayQuestion(qIndex);
-      }
   }
   else {
-    console.log("KEEP ANSWER TIMER GOING, timer id is: " + ATimerID);
-    ATimerID = setTimeout(updateACountDown, 1000); //keep this timer going
+    //answer countdown is not done, reset timer event.
+  ATimerID=setTimeout(updateACountDown, 1000);
   }
-
-  } //end of updateACountDown function
-  
+  console.log("end of answer countdown function");
+} //end of updateACountDown function
 
 function clearGameDisplay() {
-  //this function empties the game display area to ready it for a new question, answser, or score display.
+  //this function empties the game display area to ready it for a new question display.
   console.log("inside the clearGameDisplay function");
 
   console.log("current question index: " + qIndex);
   // console.log("EMPTY THE GAME DISPLAY AREA");
+
+  // NO, THIS REMOVES TOO MUCH
+  // $('p:not(first-child)').remove(); //removes all p elements except the first
+  //create a var that points to the game area
+
+  // var gamearea = $("#game-div");
 
   //remove all elements with class game-head
   $(".game-head").remove();
@@ -359,63 +297,103 @@ function clearGameDisplay() {
   $(".ansImage").remove();
   // alert("all ansImage class elements removed");
 
-  //remove all elements with class 'score'
+  //remove all elements with class score
   $(".score").remove();
-  // alert("all score class elements removed");
 
 
   console.log("end of clearGameDisplay function")
 }
 
-function displayScore(msg) {  //NEW VERSION
-  //this function displays the final scores for the round of game play just completed.
+function updateScoreCountDown() {
+  //this function updates the countdown dipslay on-screen while the game Score is on display
+  console.log("inside updateScoreCountDown function");
+
+
+  console.log("QUESTION INDEX IS: " + qIndex);
+
+
+  scoreTimeLeft = scoreTimeLeft-1 //decrement the amount of time left to display the score
+  console.log("remaining score time is " + scoreTimeLeft);
+
+  //update what is shown on-screen
+  // if (acounter != null)  {
+    //update time left display -- the is not null test is required because there is a circumstane in which this functin gets called, and the AnsTime element does not exist.
+    // console.log("ANSTIME ELEMENT EXISTS");
+    document.getElementById("scoreTime").innerText = "Next game round will begin in about " + scoreTimeLeft + " seconds.";
+    // }
+
+    if (scoreTimeLeft <= 0) {
+      //time to show score has expired
+      console.log("CANCELLING UPDATESCORECOUNTDOWN TIMER EVENT");
+      clearTimeout(ScoreTimerID);
+      console.log("START NEW GAME ROUND");
+      clearTimeout(ScoreTimerID); //stop the timer event
+      displayQuestion(qIndex);
+    }
+    else {
+      //more time to run, reset this timer
+    ScoreTimerID = setTimeout(updateScoreCountDown, 1000);  //restart this timer
+    }
+    console.log("end of updateScoreCountDown function");
+  } // end of updateScoreCountDown function
+
+
+function displayScore() { //NEW VERSION
+  //this function displays the score after all questions have been shown.
   console.log("inside displayScore function");
+
+
+//**************************************************
+  // console.log("DISPLAY FINAL SCORE FOR THIS ROUND")
+  // console.log("wins " + correctAnswers);
+  // console.log("losses " + incorrectAnswers);
+  // console.log("time outs: " + notAnswered);
+  // console.log("rounds played " + roundsPlayed);
+//**************************************************
 
   // hide the timer display
   document.getElementById("qtimer").style.visibility = "hidden";
   clearTimeout(QTimerID); //STOP TIMER EVENT
 
-  //clear the game display
-  clearGameDisplay();
+    //clear the game display
+    clearGameDisplay();
 
-  //build message strings for score info
-  //rounds played
-  var sroundsPlayed = "Rounds Played: " + roundsPlayed;
-  
-  //correct answers
+  // build message strings for score info
+    //rounds played
+    var sroundsPlayed = "Rounds Played: " + roundsPlayed;
+
+    var totalQ = 7 * roundsPlayed; //total questions answered, 7 * number of rounds played.
+
+    //total Questions
+    var sTotalQ = "In " + roundsPlayed + " rounds played, you have been shown " + totalQ + " questions.";
+
+
+    //correct answers
   var scorrectAnswers = "Correct Answers: " + correctAnswers;
   var pcnt = ((correctAnswers/7)*100);
   pcnt = pcnt.toFixed(1);
   pcnt = " (" + pcnt + "%)";
   scorrectAnswers= scorrectAnswers + pcnt
-  // console.log("PERCENT OF CORRECT ANSWERS (3/7)*100 " + scorrectAnswers);
 
-    // compute percent of corrent answer and format for display
+  // compute percent of corrent answer and format for display
   pcnt =((correctAnswers/7)*100);
   pcnt = pcnt.toFixed(2);
   pcnt =  " (" + pcnt + "%)";
-  // alert("percent of correct answers: " + pcnt);
   scorrectAnswer = scorrectAnswers + pcnt;
-  // alert("correct answers score: " + scorrectAnswers);
-
+  
   // compute percent of incorrect answers and format for display
   var sincorrectAnswers = "Incorrect Answers: " + incorrectAnswers;
   pcnt = ((incorrectAnswers/7)*100);
   pcnt = pcnt.toFixed(2);
   pcnt = " (" + pcnt + "%)";
   sincorrectAnswers = sincorrectAnswers + pcnt;
-
+  
   // computer percent of answers timed-out, and format for display
   var snotAnswered = "Not Answered: " + notAnswered;
   pcnt = ((notAnswered/7)*100);
   pcnt = pcnt.toFixed(2);
   pcnt = " (" + pcnt + "%)";
   snotAnswered = snotAnswered + pcnt;
-
-
-    //clear the answer choices from the screen
-    // $(".AnswerChoice").remove();
-
 
     //set heading for score display
     var Ptag = $("<p>").text("YOUR OVERALL SCORE FOR THIS ROUND OF QUESTIONS: ");
@@ -424,78 +402,67 @@ function displayScore(msg) {  //NEW VERSION
     $(game_div).append(Ptag); //add element to screen
     console.log("SCORE HEADING ADDED");
 
-      //SHOW rounds played
+    //SHOW rounds played
     Ptag = $("<p>").text(sroundsPlayed);
     Ptag.addClass("score");
     $(game_div).append(Ptag); //add element to screen
 
+    //show total qustions
+    Ptag = $("<p>").text(sTotalQ);
+    Ptag.addClass("score");
+    $(game_div).append(Ptag);
+  
     //SHOW correct answers
     Ptag = $("<p>").text(scorrectAnswers);
     Ptag.addClass("score");
     $(game_div).append(Ptag); //add element to screen
-
+  
     //show incorrect Answers
     Ptag = $("<p>").text(sincorrectAnswers);
     Ptag.addClass("score");
     $(game_div).append(Ptag); //add element to screen
-
+  
     //show not answered
     Ptag = $("<p>").text(snotAnswered);
     Ptag.addClass("score");
     $(game_div).append(Ptag); //add element to screen
-
-
+  
       //add p tag element to display time remaining before next question
       txt= "New game round will begin in about 10 seconds"
       Ptag = $("<p>").text(txt);
       Ptag.addClass("score"); //set the class
-      Ptag.attr("id", "AnsTime" );  //set the id
+      Ptag.attr("id", "scoreTime" );  //set the id
       game_div = document.getElementById("game-container");
       $(game_div).append(Ptag); //add element to screen
 
-    //add element to show time before next round starts
-    //add p tag element to display time remaining befoer next round
-    // txt= "Next game round will start in about 10 seconds"
-    // Ptag = $("<p>").text(txt);
-    // Ptag.addClass("game-head"); //set the class
-    // Ptag.attr("id", "AnsTime" );  //set the id
-    // game_div = document.getElementById("game-container");
-    // $(game_div).append(Ptag); //add element to screen
-
-      //******************************************************************************
+    //******************************************************************************
     //TEMP OUTPUT CODE
     console.log("FINAL SCORE");
     console.log(sroundsPlayed);
     console.log(scorrectAnswers);
     console.log(sincorrectAnswers);
     console.log(snotAnswered);
+    //******************************************************************************
 
 
-
-//**************************************** */
-
-  
     //at this point, reset the question index, and increment count of rounds played
-  roundsPlayed++
-  qIndex = 0;
+    roundsPlayed++
+    qIndex = 0;
+  
+    //finally, set up the timer to move on to the next question
+    scoreTimeLeft=10;   //set time before starting question again
+    AScoreTimerID = setTimeout(updateScoreCountDown, 1000);
+      
 
 
-        //finally, set up the timer to move on to the next question
-        scoreTimeLeft=10;   //set time before starting question again
-        // isAnswerCount = false;
-        AScoreTimerID = setTimeout(updateScoreCountDown, 1000);
-
-  //RESET THE QUESTION TIME
-  qtimeLeft = 20;
-  document.getElementById("counter").innerText = qtimeLeft;  //update what is shown on-screen
 
   console.log("end of displayScore function");
 } //end of displayScore function
 
+//**************************************************
 
 
-
-function displayAnswer(msg) { //WORKNG (MOSTLY, DOES NOT DISPLAY ANSWER WHEN INCORECT OR TIME-OUT ANSWER!!)
+function displayAnswer(msg) {
   //this function displays the answer to the question referenced by currentQ
   //if the msg parameter is "ot" the user ran out of time to answer the question
   var imgurl = ""; // url of the image to display
@@ -503,13 +470,14 @@ function displayAnswer(msg) { //WORKNG (MOSTLY, DOES NOT DISPLAY ANSWER WHEN INC
   console.log("inside displayAnswer function");
   console.log("The msg parameter is: " + msg);
 
+  console.log("STOP QUESTION TIMER");
   clearTimeout(QTimerID); //STOP TIMER EVENT
 
   //clear the answer choices from the screen
   $(".AnswerChoice").remove();
 
-  //hide the question timer
-  document.getElementById("qtimer").style.visibility="hidden";
+  //HIDE THE QUESTION TIMER DISPLAY
+  var elmt = document.getElementById("qtimer").style.visibility = "hidden";
 
 
 //Select the correct text for whether user ran out of time, answered correctly or incorrectly
@@ -578,7 +546,7 @@ function displayAnswer(msg) { //WORKNG (MOSTLY, DOES NOT DISPLAY ANSWER WHEN INC
       $(game_div).append(Ptag); //add element to screen
       
 
-      //add p tag element to display time remaining before next question
+      //add p tag element to display time remaining befoer next question
       txt= "Next question will display in about 10 seconds"
       Ptag = $("<p>").text(txt);
       Ptag.addClass("game-head"); //set the class
@@ -589,16 +557,11 @@ function displayAnswer(msg) { //WORKNG (MOSTLY, DOES NOT DISPLAY ANSWER WHEN INC
 
         //finally, set up the timer to move on to the next question
         ansTimeLeft=10; //set time before moving on to next quest as 10 seconds
-        // isAnswerCount = true; //the time being set is for countdown after showing answer
-        ATimerID = setTimeout(updateACountDown(), 1000);
+        ATimerID = setTimeout(updateACountDown, 1000);
 
 
   console.log("end of displayAnswer function");
 } //end of displayAnswer function
-
-
-
-
 
 /* only do work if the document is ready */
 $(document).ready(function () {
@@ -639,4 +602,3 @@ $(document).ready(function () {
   console.log("end of document ready function");
 } //end of document ready function
 ) //end of document ready evant handler parameter list
-
