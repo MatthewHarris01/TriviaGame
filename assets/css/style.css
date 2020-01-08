@@ -30,7 +30,26 @@ p.AnswerChoice:hover {
   background-color:azure;
   text-shadow:2px 2px blue;
 }
+h3 {
+  text-align:center;
+  color:black;
+  font-weight: bold;
 
+}
+div.directions {
+  background-color: gray;
+  width:18%;
+  border:2px solid black;
+  margin:0;
+  padding:5px;
+  color:yellowgreen;
+  font-family:Verdana, Geneva, Tahoma, sans-serif
+  font-size:12pt;
+  overflow:scroll;
+  height:550px;
+  float:left;
+
+}
 
 div.game-div {
   width:60%;

@@ -1,6 +1,6 @@
 # TriviaGame
 play a timed trivia game with the computer.
-Version 0.0 -- no html or code created, all .html and .js and .css files are empty.
+Version 1.0 -- all code completed and working.
 Version 0.1 -- file placeholders created
 Version 0.2 -- favicon file added.
 Version 0.3 -- app.js file added. .css file partially populated. Images added.
@@ -14,7 +14,7 @@ Version 0.9 -- index4.html is a prototype of the score display, and will be remo
 ADDED sound files in assets/sounds, for win/lose sounds; sounds play correctly!
 Version 0.91 -- had trouble adding a div inside the game-play area, and to avoid spinning my wheels for an excessive amount of time, decided to just display the score information in the game-play area, and display the score information with the same technique used to display questions and answers. NOTE that the prototype files, index2.html, index3.html, index4.html, and the testing document "random numbers2.html" have all been removed from the project files.
 Version 0.92 -- everything is complete, but have some bugs that appear after showing the final score. After trying to resolve those bugs, other stuff broke, and now the game does not move on from showing the answer to the initial question. I hate turning work in late, but geven that is it afte 2 am, I just seem to be spinning my wheels on this for now. I will have to see if I can get things wrapped up tomorrow, and jsut bite the bullet and turn the project in late, I don't really see what else to do for now.
+Version 1.0 -- all code, including and especially the Score dipslay, completed and working!
 
-NEXT TO DO: 1) timer code to delay for 10 seconds after showing score, and then repeat the list of questions.
-
-
+KNOWN ISSUES: none as of Version 1.0.
+SUGGESTED IMPROVEMENTS: 1) keep separate scores for each round of play, game currently keeps score values aggregated over all rounds of play. 2) devise a methdology to randomize the order in which questions are displayed, withou repeating any question. Also deveise a methodoloty to randomize the order in which answer choices are displayed, so that the correct answer does not appear in the same location in the list of answers.
